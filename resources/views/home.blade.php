@@ -24,6 +24,16 @@
                   </tbody>  
                 </table>
             </div>
+            <div class="panel-footer-1 file-listing-page">
+              <div class="row">
+                  <div class="col col-xs-4 pagination-current"></div>
+                  <div class="col col-xs-8">
+                      <ul class="file_listing_pagination pagination hidden-xs pull-right">
+                      </ul>
+                     
+                  </div>
+              </div>
+          </div>
         </div>
     </div>
 </div>

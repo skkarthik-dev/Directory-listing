@@ -63,8 +63,30 @@ custom.prototype.getFiles = function(){
 	custom.ajaxRequest('/get-files' ,'get',custom.data,custom.getFilesSuccess,custom.getFilesFailure,true)
 }
 
+custom.prototype.paginate = function(msg,url,requestType,data,successCallback,failureCallback,processData)
+{
+    
+    custom.ajaxRequest(url,requestType,data,successCallback,failureCallback,processData);   
+}
+
+custom.prototype.pagination = function(parentDiv,msg,requestType,data,successCallback,failureCallback,processData)
+{   
+
+    $('body').on('click','.' + parentDiv + ' .page-link',function(e){
+        e.preventDefault();
+        if($(this).attr('href') != undefined)
+        {
+           
+            var url = $(this).attr('href');
+            custom.paginate(msg,url,requestType,data,successCallback,failureCallback,processData);
+        }
+
+    });
+}
+
+
 custom.prototype.getFilesSuccess = function(response){
-	 $(".pagination").html(response.links);
+    $(".pagination").html(response.link);
     var pagination_current = "Page" +  response.files.current_page + " of " + response.files.last_page;
     $(".pagination-current").text('');
     if( response.files.last_page > 1 )
@@ -110,6 +132,7 @@ $(document).ready(function(){
 	if($('#myTable #listing-directory-files').length == 1)
 	{
 		custom.getFiles();
+        custom.pagination('file-listing-page','','get',custom.data,custom.getFilesSuccess,custom.getFilesFailure,true);
 	}
 	$('.search-files').blur(function() {
 		custom.getFiles();

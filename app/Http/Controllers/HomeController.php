@@ -52,7 +52,7 @@ class HomeController extends Controller
                 $files = collect(array_diff($files, $del_val)); 
             }
             
-            $files = $files->paginate(10);
+            $files = $files->paginate(1);
             $link = (string)$files->links();
             return response()->json(['files'=>$files,'link'=>$link],200);
         } catch (Exception $e) {
