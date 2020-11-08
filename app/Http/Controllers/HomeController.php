@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\UploadHistory;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -62,7 +64,15 @@ class HomeController extends Controller
 
     public function uploadFiles(Request $request){
         try {
+            $file_path = storage_path().'/app/public/files/';
+            if(!File::exists($file_path)){
+               $var = File::makeDirectory($file_path,$mode = 0777, true, true);
+            }
             $file=$request->File('file')->store('public/files/');
+            $upload = new UploadHistory();
+            $upload->actual_name = $request->file('file')->getClientOriginalName();
+            $upload->created_name = $file;
+            $upload->save();
             return response()->json(['files'=>$file],200);
         } catch (Exception $e) {
             

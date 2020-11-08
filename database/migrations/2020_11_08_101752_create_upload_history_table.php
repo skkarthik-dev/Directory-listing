@@ -18,7 +18,7 @@ class CreateUploadHistoryTable extends Migration
             $table->string('actual_name');
             $table->string('created_name');
             $table->integer('created_by')->references('id')->on('users');
-            $table->integer('updated_by')->references('id')->on('users');
+            $table->integer('updated_by')->nullable()->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
