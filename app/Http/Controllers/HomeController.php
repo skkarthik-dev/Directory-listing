@@ -64,6 +64,9 @@ class HomeController extends Controller
 
     public function uploadFiles(Request $request){
         try {
+            $validator = Validator::make($request->all(), [
+                'file' => 'max:2048',
+            ]);
             $file_path = storage_path().'/app/public/files/';
             if(!File::exists($file_path)){
                $var = File::makeDirectory($file_path,$mode = 0777, true, true);

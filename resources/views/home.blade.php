@@ -48,7 +48,7 @@
       </div>
       <div class="modal-body">
         <label for="myfile">Select a file:</label>
-        <input type="file" id="myfile" name="myfile">
+        <input type="file" id="myfile" name="myfile" data-validation="mime size" data-validation-max-size="2M">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>

@@ -122,8 +122,15 @@ custom.prototype.filterData = function(){
 
 custom.prototype.uploadSucces = function(response)
 {
+    $("#myfile").val('');
      $('#myModal').find('.close-btn').trigger('click');
      custom.getFiles();
+}
+
+custom.prototype.uploadFailure = function(response)
+{
+    $("#myfile").val('');
+    alert("Max file size should be less than 2M");
 }
 
 var custom = new custom();
@@ -138,16 +145,18 @@ $(document).ready(function(){
 		custom.getFiles();
 	});
     $('#myfile').change(function(e) {
-        let upload = {};
-        if (this.files && this.files[0]) {
-            var reader = new FileReader();
-            reader.readAsDataURL(this.files[0]);
-            
-                upload.document_form = new FormData();
-                upload.document_form.append('file',this.files[0]);
-                custom.ajaxRequest('/upload-file','post',upload.document_form,custom.uploadSucces,custom.uploadFailur);
-         
-            //reader.readAsDataURL(this.files[0]);
+        if( $("#myfile").isValid() ){
+            let upload = {};
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.readAsDataURL(this.files[0]);
+                
+                    upload.document_form = new FormData();
+                    upload.document_form.append('file',this.files[0]);
+                    custom.ajaxRequest('/upload-file','post',upload.document_form,custom.uploadSucces,custom.uploadFailure);
+             
+                //reader.readAsDataURL(this.files[0]);
+            }
         }
         else {
             console.log("error");
