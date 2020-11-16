@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UploadHistory;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -65,20 +66,37 @@ class HomeController extends Controller
     public function uploadFiles(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'file' => 'max:2048',
+                'file' => 'required|file|max:2048',
+            ],[
+            'file.required' => "Please Select a File to Upload",
+            'file.file' => "Invalid file type",
+            'file.max' => "Allowed file size is :max",
             ]);
-            $file_path = storage_path().'/app/public/files/';
-            if(!File::exists($file_path)){
-               $var = File::makeDirectory($file_path,$mode = 0777, true, true);
+            if($validator->fails()){
+            return response($validator->messages(), 400);
+            } else {
+                $file_path = storage_path().'/app/public/files/';
+                if(!File::exists($file_path)){
+                   $var = File::makeDirectory($file_path,$mode = 0777, true, true);
+                }
+                $file=$request->File('file')->store('public/files/');
+                $upload = new UploadHistory();
+                $upload->actual_name = $request->file('file')->getClientOriginalName();
+                $upload->created_name = $file;
+                $upload->save();
+                return response()->json(['files'=>$file],200);
             }
-            $file=$request->File('file')->store('public/files/');
-            $upload = new UploadHistory();
-            $upload->actual_name = $request->file('file')->getClientOriginalName();
-            $upload->created_name = $file;
-            $upload->save();
-            return response()->json(['files'=>$file],200);
         } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()],400);
+        }
+    }
+
+    public function deleteFile(Request $request)
+    {
+        try {
             
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()],400);
         }
     }
 }
