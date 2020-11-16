@@ -79,7 +79,7 @@ class HomeController extends Controller
                 if(!File::exists($file_path)){
                    $var = File::makeDirectory($file_path,$mode = 0777, true, true);
                 }
-                $file=$request->File('file')->store('public/files/');
+                $file=$request->File('file')->store('public/files');
                 $upload = new UploadHistory();
                 $upload->actual_name = $request->file('file')->getClientOriginalName();
                 $upload->created_name = $file;
@@ -94,7 +94,18 @@ class HomeController extends Controller
     public function deleteFile(Request $request)
     {
         try {
-            
+            $files_path = base_path('storage/app/public/files/');
+           $file =  UploadHistory::where('created_name','public/files/'.$request->file)->first();
+           if($file == null)
+           {
+                return response()->json(['error' => "Please provide valid File"],400);
+           }
+           else
+           {
+                $file->delete();
+                unlink($files_path.$request->file);
+                return response()->json(['success'=>1,'message'=>'File has been deleted successfully'],200);
+           }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()],400);
         }

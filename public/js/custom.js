@@ -102,7 +102,7 @@ custom.prototype.getFilesSuccess = function(response){
                 .text(files)
                 )
             .append($('<td class="text-center">')
-                .html("<a href='#'>Delete</a>")
+                .html("<a href='javascript:void(0);' data-file='"+files+"' class='delete-file'>Delete</a>")
                 )
             );
             j++;
@@ -133,6 +133,18 @@ custom.prototype.uploadFailure = function(response)
     alert("Max file size should be less than 2M");
 }
 
+custom.prototype.deleteSucces = function(response)
+{
+    if(response.success)
+    {
+        custom.getFiles();
+    }
+}
+custom.prototype.deleteFailure = function(response)
+{
+    console.log(response);
+}
+
 var custom = new custom();
 $(document).ready(function(){
 
@@ -154,12 +166,19 @@ $(document).ready(function(){
                     upload.document_form = new FormData();
                     upload.document_form.append('file',this.files[0]);
                     custom.ajaxRequest('/upload-file','post',upload.document_form,custom.uploadSucces,custom.uploadFailure);
-             
-                //reader.readAsDataURL(this.files[0]);
             }
         }
         else {
             console.log("error");
         }
+    });
+    $('body').on('click','.delete-file',function(e){
+        if (!confirm('Do you want to delete this file?')) return false;
+        e.preventDefault();
+        var file = $(this).data('file');
+        custom.document_form = new FormData();
+        custom.document_form.append('file',file);
+        custom.ajaxRequest('/delete-file','post',custom.document_form,custom.deleteSucces,custom.deleteFailure);
+        
     })
 });
